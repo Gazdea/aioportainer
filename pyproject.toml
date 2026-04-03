@@ -1,14 +1,18 @@
 [build-system]
-requires = ["setuptools>=45", "wheel"]
+requires = ["setuptools>=45", "wheel", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+fallback_version = "0.0.0"
 
 [tool.setuptools.packages.find]
 include = ["portainer*"]
 exclude = ["tests*", "docs*", "snapshots*"]
 
 [project]
-name = "homelab-portainer"
-version = "0.1.0"
+name = "aioportainer"
+version = "attr: setuptools_scm.get_version"
 description = "Async CLI for Portainer API with Git integration, health monitoring, image watching and event listening"
 readme = "README.md"
 requires-python = ">=3.9"
