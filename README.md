@@ -8,7 +8,7 @@ Async CLI for Portainer API with Git integration, health monitoring, image watch
 - **Stack Management** - Git-based deploy with automatic commit/push/redeploy
 - **Container Management** - Start, stop, restart, logs, stats
 - **Health Monitoring** - Stack and container health checks
-- **Image Watcher** - Monitor Docker images for updates (like pyportainer)
+- **Image Watcher** - Monitor Docker images for updates
 - **Event Listener** - Real-time Docker events streaming
 
 ## Installation
@@ -54,18 +54,6 @@ portainer watch images --interval 6
 # Listen to events
 portainer events start --duration 30
 ```
-
-## Comparison with pyportainer
-
-| Feature | pyportainer | homelab-portainer |
-|---------|-------------|-------------------|
-| Async API | Yes | Yes |
-| Image Watcher | Yes | Yes |
-| Event Listener | Yes | Yes |
-| Git Integration | No | Yes (commit/push/redeploy) |
-| Health Monitoring | No | Yes |
-| CLI | No | Yes |
-| Multi-endpoint | Limited | Yes |
 
 ## Project Structure
 
