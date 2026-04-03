@@ -12,7 +12,7 @@ exclude = ["tests*", "docs*", "snapshots*"]
 
 [project]
 name = "aioportainer"
-version = "attr: setuptools_scm.get_version"
+dynamic = ["version"]
 description = "Async CLI for Portainer API with Git integration, health monitoring, image watching and event listening"
 readme = "README.md"
 requires-python = ">=3.9"
