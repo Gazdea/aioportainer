@@ -14,19 +14,20 @@ def mock_session():
     session.post = AsyncMock()
     session.put = AsyncMock()
     session.delete = AsyncMock()
+    session.close = AsyncMock()
     return session
 
 
 @pytest.fixture
-async def client(mock_session):
+def client(mock_session):
     """Create PortainerClient with mock session."""
-    client = PortainerClient(
+    cli = PortainerClient(
         url="https://test:9443",
         token="test-token",
         endpoints=["1"],
     )
-    client._session = mock_session
-    return client
+    cli._session = mock_session
+    return cli
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 """Tests for PortainerClient."""
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 from portainer.client import PortainerClient
 
