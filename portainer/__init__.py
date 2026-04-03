@@ -10,6 +10,15 @@ if sys.platform == "win32":
 from .cli import cli
 from .client import PortainerClient
 from .container_manager import ContainerManager
+from .exceptions import (
+    AuthenticationError,
+    NotFoundError,
+    PortainerConnectionError,
+    PortainerError,
+    PortainerTimeoutError,
+    RateLimitError,
+    ValidationError,
+)
 from .listener import EventListener
 from .models import (
     Container,
@@ -29,11 +38,22 @@ from .models import (
     Volume,
 )
 from .monitor import HealthMonitor
+from .retry import retry, retry_sync
 from .stack_manager import StackManager
 from .watcher import ImageWatcher
 
 __all__ = [
+    # Client
     "PortainerClient",
+    # Exceptions
+    "PortainerError",
+    "PortainerConnectionError",
+    "AuthenticationError",
+    "NotFoundError",
+    "ValidationError",
+    "PortainerTimeoutError",
+    "RateLimitError",
+    # Models
     "Stack",
     "Container",
     "Endpoint",
@@ -49,10 +69,15 @@ __all__ = [
     "ImageWatcherResult",
     "DockerEvent",
     "EventListenerResult",
+    # Managers
     "StackManager",
     "ContainerManager",
     "HealthMonitor",
     "ImageWatcher",
     "EventListener",
+    # Utils
+    "retry",
+    "retry_sync",
+    # CLI
     "cli",
 ]

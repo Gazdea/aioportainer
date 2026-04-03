@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "plan": {
+      "permission": {
+        "skill": {
+          "portainer-cli": "allow",
+          "portainer-git": "deny"
+        }
+      }
+    },
+    "code": {
+      "permission": {
+        "skill": {
+          "portainer-cli": "allow",
+          "portainer-git": "allow"
+        }
+      }
+    }
+  }
+}

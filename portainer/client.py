@@ -5,6 +5,13 @@ from typing import Optional
 import aiohttp
 import urllib3
 
+from .exceptions import (
+    AuthenticationError,
+    NotFoundError,
+    PortainerError,
+    RateLimitError,
+)
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -17,12 +24,25 @@ class PortainerClient:
         token: Optional[str] = None,
         endpoints: list[str] = None,
         timeout: int = 30,
+        max_connections: int = 10,
+        max_connections_per_host: int = 5,
     ):
-        """Initialize client."""
+        """Initialize client.
+
+        Args:
+            url: Portainer URL
+            token: API token
+            endpoints: List of endpoint IDs to query
+            timeout: Request timeout in seconds
+            max_connections: Max total connections
+            max_connections_per_host: Max connections per host
+        """
         self.url = url.rstrip("/")
         self.token = token or self._get_token_from_env()
         self.endpoints = endpoints or ["1", "3"]
         self.timeout = timeout
+        self.max_connections = max_connections
+        self.max_connections_per_host = max_connections_per_host
         self._session: Optional[aiohttp.ClientSession] = None
 
     def _get_token_from_env(self) -> str:
@@ -42,11 +62,15 @@ class PortainerClient:
         await self.disconnect()
 
     async def connect(self):
-        """Create aiohttp session."""
+        """Create aiohttp session with connection pooling."""
         if self._session is None:
             self._session = aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=self.timeout),
-                connector=aiohttp.TCPConnector(ssl=False),
+                connector=aiohttp.TCPConnector(
+                    ssl=False,
+                    limit=self.max_connections,
+                    limit_per_host=self.max_connections_per_host,
+                ),
             )
 
     async def disconnect(self):
@@ -59,33 +83,51 @@ class PortainerClient:
         """Build request headers."""
         return {"X-API-Key": self.token}
 
+    def _handle_response(self, resp: aiohttp.ClientResponse, data: dict = None) -> dict:
+        """Handle HTTP response and raise appropriate errors."""
+        status = resp.status
+
+        if status == 401:
+            raise AuthenticationError("Authentication failed. Check your API token.")
+        elif status == 403:
+            raise AuthenticationError("Access forbidden. Insufficient permissions.")
+        elif status == 404:
+            raise NotFoundError(f"Resource not found: {resp.url}")
+        elif status == 429:
+            raise RateLimitError("Rate limit exceeded. Try again later.")
+        elif status >= 500:
+            raise PortainerError(f"Server error: {status}")
+
+        resp.raise_for_status()
+        return data
+
     async def get(self, endpoint: str) -> dict:
         """Execute GET request."""
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.get(url, headers=self._headers()) as resp:
-            resp.raise_for_status()
-            return await resp.json()
+            data = await resp.json()
+            return self._handle_response(resp, data)
 
     async def post(self, endpoint: str, data: dict = None) -> dict:
         """Execute POST request."""
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.post(url, json=data, headers=self._headers()) as resp:
-            resp.raise_for_status()
-            return await resp.json()
+            resp_data = await resp.json()
+            return self._handle_response(resp, resp_data)
 
     async def put(self, endpoint: str, data: dict = None) -> dict:
         """Execute PUT request."""
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.put(url, json=data, headers=self._headers()) as resp:
-            resp.raise_for_status()
-            return await resp.json()
+            resp_data = await resp.json()
+            return self._handle_response(resp, resp_data)
 
     async def delete(self, endpoint: str) -> dict:
         """Execute DELETE request."""
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.delete(url, headers=self._headers()) as resp:
-            resp.raise_for_status()
-            return await resp.json()
+            data = await resp.json() if resp.content_length else {}
+            return self._handle_response(resp, data)
 
     # === Endpoints ===
 
