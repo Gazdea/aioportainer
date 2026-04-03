@@ -22,7 +22,7 @@ class PortainerClient:
         self,
         url: str = "https://gaz-linux:9443",
         token: Optional[str] = None,
-        endpoints: list[str] = None,
+        endpoints: Optional[list[str]] = None,
         timeout: int = 30,
         max_connections: int = 10,
         max_connections_per_host: int = 5,
@@ -83,7 +83,7 @@ class PortainerClient:
         """Build request headers."""
         return {"X-API-Key": self.token}
 
-    def _handle_response(self, resp: aiohttp.ClientResponse, data: dict = None) -> dict:
+    def _handle_response(self, resp: aiohttp.ClientResponse, data: Optional[dict] = None) -> dict:
         """Handle HTTP response and raise appropriate errors."""
         status = resp.status
 
@@ -99,34 +99,38 @@ class PortainerClient:
             raise PortainerError(f"Server error: {status}")
 
         resp.raise_for_status()
-        return data
+        return data if data is not None else {}
 
     async def get(self, endpoint: str) -> dict:
         """Execute GET request."""
+        assert self._session is not None
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.get(url, headers=self._headers()) as resp:
-            data = await resp.json()
+            data: dict = await resp.json()
             return self._handle_response(resp, data)
 
-    async def post(self, endpoint: str, data: dict = None) -> dict:
+    async def post(self, endpoint: str, data: Optional[dict] = None) -> dict:
         """Execute POST request."""
+        assert self._session is not None
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.post(url, json=data, headers=self._headers()) as resp:
-            resp_data = await resp.json()
+            resp_data: dict = await resp.json()
             return self._handle_response(resp, resp_data)
 
-    async def put(self, endpoint: str, data: dict = None) -> dict:
+    async def put(self, endpoint: str, data: Optional[dict] = None) -> dict:
         """Execute PUT request."""
+        assert self._session is not None
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.put(url, json=data, headers=self._headers()) as resp:
-            resp_data = await resp.json()
+            resp_data: dict = await resp.json()
             return self._handle_response(resp, resp_data)
 
     async def delete(self, endpoint: str) -> dict:
         """Execute DELETE request."""
+        assert self._session is not None
         url = f"{self.url}/api/{endpoint.lstrip('/')}"
         async with self._session.delete(url, headers=self._headers()) as resp:
-            data = await resp.json() if resp.content_length else {}
+            data: dict = await resp.json() if resp.content_length else {}
             return self._handle_response(resp, data)
 
     # === Endpoints ===
@@ -141,15 +145,16 @@ class PortainerClient:
 
     # === Stacks ===
 
-    async def get_stacks(self, endpoint_id: str = None) -> list[dict]:
+    async def get_stacks(self, endpoint_id: Optional[str] = None) -> list[dict]:
         """Get stacks from endpoint(s)."""
         if endpoint_id:
-            return await self.get(f"stacks?endpointId={endpoint_id}")
+            data = await self.get(f"stacks?endpointId={endpoint_id}")
+            return data if isinstance(data, list) else []
 
-        all_stacks = []
+        all_stacks: list[dict] = []
         for ep in self.endpoints:
             try:
-                stacks = await self.get(f"stacks?endpointId={ep}")
+                stacks: list[dict] = await self.get(f"stacks?endpointId={ep}")
                 for s in stacks:
                     s["EndpointId"] = int(ep)
                 all_stacks.extend(stacks)
@@ -157,7 +162,7 @@ class PortainerClient:
                 pass
         return all_stacks
 
-    async def get_stack(self, name: str, endpoint_id: str = None) -> Optional[dict]:
+    async def get_stack(self, name: str, endpoint_id: Optional[str] = None) -> Optional[dict]:
         """Get stack by name."""
         if endpoint_id:
             stacks = await self.get_stacks(endpoint_id)
@@ -165,7 +170,7 @@ class PortainerClient:
             # Search across all endpoints
             for ep in self.endpoints:
                 try:
-                    stacks = await self.get(f"stacks?endpointId={ep}")
+                    stacks: list[dict] = await self.get(f"stacks?endpointId={ep}")
                     for s in stacks:
                         if s.get("Name") == name:
                             # Get actual endpoint from stack details
