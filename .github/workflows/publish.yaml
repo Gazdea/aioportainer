@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
 
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
 
@@ -29,5 +32,6 @@ jobs:
 
       - name: Publish to PyPI
         env:
-          TWINE_DISABLE_TRUSTED_PUBLISHING: "1"
-        run: twine upload --username __token__ --password "${{ secrets.PYPI_API_TOKEN }}" dist/*
+          TWINE_DISABLE_TRUSTED_PUBLISHING: "true"
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: pip install twine && twine upload --username __token__ dist/*
