@@ -1,4 +1,4 @@
-# homelab-portainer
+# aioportainer
 
 Async CLI for Portainer API with Git integration, health monitoring, image watching and event listening.
 
@@ -57,7 +57,7 @@ portainer events start --duration 30
 
 ## Comparison with pyportainer
 
-| Feature | pyportainer | homelab-portainer |
+| Feature | pyportainer | aioportainer |
 |---------|-------------|-------------------|
 | Async API | Yes | Yes |
 | Image Watcher | Yes | Yes |

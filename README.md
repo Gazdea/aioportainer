@@ -1,4 +1,4 @@
-# homelab-portainer
+# aioportainer
 
 Async CLI for Portainer API with Git integration, health monitoring, image watching and event listening.
 

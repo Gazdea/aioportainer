@@ -1,4 +1,4 @@
-# homelab-portainer
+# aioportainer
 
 Async CLI для Portainer API с поддержкой Git-деплоя, мониторинга, отслеживания обновлений образов и событий Docker.
 

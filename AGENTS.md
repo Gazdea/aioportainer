@@ -4,7 +4,7 @@ This file provides guidelines for agentic coding agents working in this reposito
 
 ## Project Overview
 
-- **Name**: homelab-portainer
+- **Name**: aioportainer
 - **Type**: Async CLI for Portainer API
 - **Python**: 3.9+
 - **Dependencies**: aiohttp>=3.9.0, click>=8.0.0, urllib3>=2.0.0

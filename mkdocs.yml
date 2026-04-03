@@ -1,7 +1,7 @@
-site_name: homelab-portainer
+site_name: aioportainer
 site_description: Async CLI for Portainer API
-site_url: https://github.com/anomalyco/aioportainer
-repo_url: https://github.com/anomalyco/aioportainer
+site_url: https://github.com/Gazdea/aioportainer
+repo_url: https://github.com/Gazdea/aioportainer
 
 theme:
   name: material
