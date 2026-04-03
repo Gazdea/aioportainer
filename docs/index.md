@@ -14,7 +14,7 @@ Async CLI for Portainer API with Git integration, health monitoring, image watch
 ## Installation
 
 ```bash
-pip install -e .
+pip install aioportainer
 ```
 
 ## Quick Start

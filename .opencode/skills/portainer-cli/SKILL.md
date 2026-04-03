@@ -41,6 +41,10 @@ tests/
 ## Installation
 
 ```bash
+# Install package
+pip install aioportainer
+
+# Development installation
 pip install -e ".[dev]"
 pip install -e ".[docs]"
 ```
