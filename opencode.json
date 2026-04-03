@@ -5,7 +5,9 @@
       "permission": {
         "skill": {
           "portainer-cli": "allow",
-          "portainer-git": "deny"
+          "portainer-git": "deny",
+          "portainer-compose": "deny",
+          "portainer-oncall": "deny"
         }
       }
     },
@@ -13,7 +15,9 @@
       "permission": {
         "skill": {
           "portainer-cli": "allow",
-          "portainer-git": "allow"
+          "portainer-git": "allow",
+          "portainer-compose": "allow",
+          "portainer-oncall": "allow"
         }
       }
     }
