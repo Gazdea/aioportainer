@@ -31,7 +31,6 @@ jobs:
         run: pip install twine && twine check dist/*
 
       - name: Publish to PyPI
-        env:
-          TWINE_DISABLE_TRUSTED_PUBLISHING: "true"
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: pip install twine && twine upload --username __token__ dist/*
+        run: |
+          pip install twine
+          twine upload --non-interactive --disable-progress-bar --username __token__ --password "${{ secrets.PYPI_API_TOKEN }}" dist/*
