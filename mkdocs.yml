@@ -1,0 +1,37 @@
+site_name: homelab-portainer
+site_description: Async CLI for Portainer API
+site_url: https://github.com/anomalyco/aioportainer
+repo_url: https://github.com/anomalyco/aioportainer
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+    - scheme: slate
+      primary: blue
+      accent: blue
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+
+nav:
+  - Home: index.md
+  - API Reference:
+    - client.md
+    - models.md
+    - watcher.md
+    - listener.md
+  - CLI: cli.md
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      css_class: highlight
+  - toc:
+      permalink: true
+
+plugins:
+  - search
